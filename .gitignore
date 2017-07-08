@@ -22,3 +22,10 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# ignore golang dependencies
+vendor
+
+# ignore application binary
+dodns
+
