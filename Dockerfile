@@ -1,5 +1,7 @@
 FROM golang:1.8
 
+RUN apt-get -y update && apt-get -y install tzdata
+
 WORKDIR /go/src/app
 COPY . .
 
