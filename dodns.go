@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/digitalocean/godo"
-	ipify "github.com/rdegges/go-ipify"
 	"golang.org/x/oauth2"
 )
 
@@ -21,6 +22,18 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 	return token, nil
 }
 
+func getIp() (string, error) {
+	res, err := http.Get("https://api.ipify.org")
+	if err != nil {
+		return "", err
+	}
+	ip, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(ip), nil
+}
+
 func main() {
 
 	// Flags with no serious DEFAULT value
@@ -30,7 +43,7 @@ func main() {
 
 	flag.Parse()
 
-	ip, err := ipify.GetIp()
+	ip, err := getIp()
 
 	if err != nil {
 		log.Fatal("Couldn't get my IP address:", err)
