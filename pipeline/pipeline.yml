@@ -28,6 +28,7 @@ jobs:
     - get: schedule
       trigger: true
     - get: dodns
+      trigger: true
 
   - task: update-dodns
     file: dodns/pipeline/tasks/update-dodns/task.yml
