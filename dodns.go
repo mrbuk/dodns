@@ -40,14 +40,20 @@ func main() {
 	tokenPtr := flag.String("token", "", "Digital Ocean Token")
 	domainPtr := flag.String("domain", "", "Domain that will be maintained with current IP")
 	recordNamePtr := flag.String("name", "", "Record name that should be used to idenfity the IP")
-
+	ipAddressPtr := flag.String("ip", "", "IP address to the set record to. If no is provided it will be determined using api.ipify.org")
 	flag.Parse()
 
-	ip, err := getIp()
+	var ip string
+	if *ipAddressPtr == "" {
+		var err error
+		ip, err = getIp()
 
-	if err != nil {
-		log.Fatal("Couldn't get my IP address:", err)
-		os.Exit(1)
+		if err != nil {
+			log.Fatal("Couldn't get my IP address:", err)
+			os.Exit(1)
+		}
+	} else {
+		ip = *ipAddressPtr
 	}
 
 	log.Printf("Current IP: %s\n", ip)
