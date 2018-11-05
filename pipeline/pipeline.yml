@@ -1,4 +1,10 @@
 resource_types:
+- name: myip-resource
+  type: docker-image
+  source:
+    repository: mrbuk/myip-resource
+    tag: latest
+
 - name: dodns
   type: docker-image
   source:
@@ -6,30 +12,28 @@ resource_types:
     tag: latest-final
 
 resources:
+- name: myip
+  type: myip-resource
+  source:
+    # default
+    #uri: https://api.ipify.org
+    # change to a local server for testing
+    #uri: http://192.168.0.100:8080
+
 - name: dodns
   type: git
   source:
     uri: https://github.com/mrbuk/dodns
-
-- name: schedule
-  type: time
-  source:
-    interval: 30m
-    start: "12:00 AM"
-    stop: "11:59 PM"
-    location: Europe/Berlin
-    days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
 
 jobs:
 
 - name: update-dodns
   plan:
   - aggregate:
-    - get: schedule
-      trigger: true
     - get: dodns
+      trigger: false
+    - get: myip
       trigger: true
-
   - task: update-dodns
     file: dodns/pipeline/tasks/update-dodns/task.yml
     params:
